@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const maxRange = document.querySelector(".max-range");
     const rangeSlider = document.querySelector(".price-slider");
 
-    const priceGap = 500;
+    const priceGap = 10;
     const maxPriceLimit = 10000;
     const minPriceLimit = 0;
 

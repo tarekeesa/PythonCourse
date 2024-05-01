@@ -63,7 +63,11 @@ def filter_products(request):
     price_max = request.GET.get('price_max', 500)
     sort_by = request.GET.get('sort_by', 'id')
     print('category_ids',category_ids)
+    keyword = request.GET.get('keyword', '')
+
     products = Product.objects.all()
+    if keyword:
+        products = products.filter(title__icontains=keyword)  # Or any other field relevant to your search
     if category_ids:
         products = products.filter(category_id__in=category_ids)
         print('products',products)

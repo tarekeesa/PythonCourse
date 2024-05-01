@@ -101,7 +101,6 @@ input::-webkit-inner-spin-button {
     top: -5px; 
     pointer-events: none; 
     cursor: pointer; 
-    -webkit-appearance: none; 
 } 
   
 /* Styles for the range thumb in WebKit browsers */
@@ -155,7 +154,7 @@ input[type="range"]::-webkit-slider-thumb {
             </div>
             <div class="modal-body d-flex align-items-center">
                 <div class="input-group w-75 mx-auto d-flex">
-                    <input type="search" class="form-control p-3" placeholder="keywords"
+                    <input type="search" class="form-control p-3 search" placeholder="keywords"
                         aria-describedby="search-icon-1">
                     <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
                 </div>
@@ -187,7 +186,7 @@ input[type="range"]::-webkit-slider-thumb {
                 <div class="row g-4">
                     <div class="col-xl-3">
                         <div class="input-group w-100 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords"
+                            <input type="search" class="form-control p-3" placeholder="keywords" id="keywordSearch"
                                 aria-describedby="search-icon-1">
                             <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
                         </div>
@@ -432,13 +431,13 @@ input[type="range"]::-webkit-slider-thumb {
 <script src='{% static "theme/js/slider.js" %}'></script>
 
 
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Identifying the slider elements
         const minRangeSlider = document.querySelector(".min-range");
         const maxRangeSlider = document.querySelector(".max-range");
-
+        const searchInput = document.querySelector('#keywordSearch');  // Make sure '.search' is the correct selector for your input
+    
         // Adding event listeners to both sliders
         [minRangeSlider, maxRangeSlider].forEach(slider => {
             slider.addEventListener("blur", () => {
@@ -446,30 +445,39 @@ input[type="range"]::-webkit-slider-thumb {
                 updateProductList();
             });
         });
+    
+        // Event listener for the search input on 'change' event
+        searchInput.addEventListener('change', () => {
+            const searchValue = searchInput.value;
+            console.log('Search Value:', searchValue);  // Log search value to debug
+            if (searchValue.length >= 5) {  // Check if at least 5 characters are typed
+                updateProductList();  // Only call updateProductList if conditions are met
+            }
+        });
     });
-
+    
     function updateProductList() {
         let categoryInputs = document.querySelectorAll('[name="Categories-1"]:checked');
         let categories = Array.from(categoryInputs).map(input => `categories=${input.value}`);
         let categoryQuery = categories.join('&');
-
+        let searchInput = document.querySelector('#keywordSearch');  // Ensure this selector is correct
+        let searchValue = searchInput.value;  // Capture search value for use in your fetch request
         let sortOption = document.getElementById('fruits').value;
-
-        // Getting values from sliders
+        console.log('searchValue',searchValue)
         let minPrice = document.querySelector('.min-range').value;
         let maxPrice = document.querySelector('.max-range').value;
-
-        // Fetch request with price range
-        fetch(`/products/filter_products/?${categoryQuery}&price_min=${minPrice}&price_max=${maxPrice}&sort_by=${sortOption}`)
+    
+        // Fetch request with all filters, including search keyword
+        fetch(`/products/filter_products/?keyword=${searchValue}&${categoryQuery}&price_min=${minPrice}&price_max=${maxPrice}&sort_by=${sortOption}`)
             .then(response => response.json())
             .then(data => updateProductsDisplay(data))
             .catch(error => console.error('Error:', error));
     }
-
+    
     function updateProductsDisplay(data) {
         let productsDiv = document.getElementById('products');
         productsDiv.innerHTML = '';  // Clear current products
-
+    
         data.products.forEach(product => {
             const productHTML = `
                 <div class="col-md-6 col-lg-6 col-xl-4">
@@ -494,7 +502,8 @@ input[type="range"]::-webkit-slider-thumb {
             productsDiv.innerHTML += productHTML;
         });
     }
-</script>
+    </script>
+    
 
 <!-- Fruits Shop End-->
 {% endblock %}
