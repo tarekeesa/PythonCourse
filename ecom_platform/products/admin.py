@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Product
+from .models import Category, Product
+from mptt.admin import DraggableMPTTAdmin
+
 
 class ProductAdmin(admin.ModelAdmin):
     # Display these fields in the admin list view
@@ -21,3 +23,4 @@ class ProductAdmin(admin.ModelAdmin):
     active_status.short_description = 'Is Active?'
 
 admin.site.register(Product, ProductAdmin)
+admin.site.register(Category , DraggableMPTTAdmin) 

@@ -3,6 +3,9 @@ from django_quill.fields import QuillField
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 import os, random
+from mptt.models import MPTTModel, TreeForeignKey
+from ecommerce.utils import unique_slug_generator, get_filename
+from django.db.models import Count
 
 
 def get_filename_ext(filepath):
@@ -90,11 +93,62 @@ class Product(models.Model):
     store   = models.CharField(max_length=120,null=True)
     likes = models.ManyToManyField(User, related_name='product_like')
     unit = models.CharField(max_length= 50,choices = PRICE_UNITS_CHOICES,default='')
+    category = TreeForeignKey('Category',null=True,blank=True,on_delete=models.CASCADE,related_query_name='products')
 
     objects = ProductManager()
 
     class Meta:
         indexes = [
-            models.Index(fields=['title','store','active','featured','unit', 'slug','created_at']),
+            models.Index(fields=['title','store','active','featured','price','unit','cost','quantity','descriptions', 'is_digital','slug','created_at','category']),
         ]
+
+
+class CategoryManager(models.Manager):
+    def get_queryset(self):
+        # Annotate each category with the count of its products
+        return super().get_queryset().annotate(product_count=Count('products'))
+
     
+class Category(MPTTModel):
+    name = models.CharField(max_length=50, unique=True)
+    user = models.ForeignKey(User, null=True, blank=True , on_delete=models.CASCADE)
+    parent = TreeForeignKey('self', null=True, blank=True,
+    related_name='children',
+    db_index=True ,on_delete=models.CASCADE)
+    slug = models.SlugField(null=True, blank=True)
+
+    objects = CategoryManager()
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    class Meta:
+        unique_together = (('parent', 'slug',))
+        verbose_name_plural = 'categories'
+
+    def inefficient_product_count(self):
+        # This counts products by making a database query each time the method is called
+        print('category',self.product_set.all())
+        return self.product_set.count()
+    
+    def efficient_product_count(self):
+        return getattr(self, 'product_count', 0)
+
+    def get_slug_list(self):
+        try:
+            ancestors = self.get_ancestors(include_self=True)
+        except:
+            ancestors = []
+        else:
+            ancestors = [ i.slug for i in ancestors]
+        slugs = []
+        for i in range(len(ancestors)):
+            slugs.append('/'.join(ancestors[:i+1]))
+        return slugs
+    
+    def __str__(self):
+        return self.name
+        
+    @property
+    def title(self):
+        return self.name
