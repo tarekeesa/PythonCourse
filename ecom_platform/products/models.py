@@ -64,6 +64,8 @@ class ProductManager(models.Manager):
 
 
 User = get_user_model()
+
+
 class Product(models.Model):
     PRICE_UNITS_CHOICES = (
         ('', 'Choose Product Unit'),

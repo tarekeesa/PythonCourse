@@ -2,30 +2,32 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="utf-8">
-        <title>Fruitables - Vegetable Website Template</title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
+<head>
+    <meta charset="utf-8">
+    <title>Fruitables - Vegetable Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
 
-        {% include 'theme/css.html' %}
-        {% include 'django_quill/media.html' %}
+    {% include 'theme/css.html' %}
+    {% include 'django_quill/media.html' %}
+    {% block header %}
+    {% endblock %}
+</head>
 
-    </head>
-    <body>
+<body>
 
-        {% include 'navbar.html' with brand_name='eCommerce' %}
+    {% include 'navbar.html' with brand_name='eCommerce' %}
 
-        <div class="mx-auto text-center"> {{message}}</div>
-        {% block content %}
+    <div class="mx-auto text-center"> {{message}}</div>
+    {% block content %}
 
-        {% endblock %}
-    
-        {% include 'footer.html' with brand_name='eCommerce' %}
-        <!-- Back to Top -->
-        {% include 'theme/js.html' %}
+    {% endblock %}
 
-    </body>
+    {% include 'footer.html' with brand_name='eCommerce' %}
+    <!-- Back to Top -->
+    {% include 'theme/js.html' %}
+
+</body>
 
 </html>

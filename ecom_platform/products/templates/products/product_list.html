@@ -1,7 +1,148 @@
 {% extends "base.html" %}
 
 {% load static %}
-
+{% block header %}
+<style>
+     
+.gfg { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 24px; 
+    font-weight: 600; 
+    color: #01940b; 
+} 
+  
+.custom-wrapper { 
+    margin: 0; 
+    width: 70%; 
+    padding: 0px 25px 40px; 
+    position: relative; 
+    left: 63px; 
+} 
+  
+.header h2 { 
+    font-size: 30px; 
+    color: #01940b; 
+    display: flex; 
+    justify-content: center; 
+    padding: 20px; 
+} 
+  
+/* Styles for the price input container */
+.price-input-container { 
+    width: 100%; 
+} 
+  
+.price-input .price-field { 
+    display: flex; 
+    margin-bottom: 22px; 
+} 
+  
+.price-field span { 
+    margin-right: 10px; 
+    margin-top: 6px; 
+    font-size: 17px; 
+} 
+  
+.price-field input { 
+    flex: 1; 
+    height: 35px; 
+    font-size: 15px; 
+    font-family: "DM Sans", sans-serif; 
+    border-radius: 9px; 
+    text-align: center; 
+    border: 0px; 
+    background: #e4e4e4; 
+} 
+  
+.price-input { 
+    width: 100%; 
+    font-size: 19px; 
+    color: #555; 
+} 
+  
+/* Remove Arrows/Spinners */
+input::-webkit-outer-spin-button, 
+input::-webkit-inner-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+} 
+  
+.slider-container { 
+    width: 100%; 
+} 
+  
+.slider-container { 
+    height: 6px; 
+    position: relative; 
+    background: #e4e4e4; 
+    border-radius: 5px; 
+} 
+  
+.slider-container .price-slider { 
+    height: 100%; 
+    left: 0%; 
+    right: 50%; 
+    position: absolute; 
+    border-radius: 5px; 
+    background: #01940b; 
+} 
+  
+.range-input { 
+    position: relative; 
+} 
+  
+.range-input input { 
+    position: absolute; 
+    width: 100%; 
+    height: 5px; 
+    background: none; 
+    top: -5px; 
+    pointer-events: none; 
+    cursor: pointer; 
+    -webkit-appearance: none; 
+} 
+  
+/* Styles for the range thumb in WebKit browsers */
+input[type="range"]::-webkit-slider-thumb { 
+    height: 18px; 
+    width: 18px; 
+    border-radius: 70%; 
+    background: #555; 
+    pointer-events: auto; 
+    -webkit-appearance: none; 
+} 
+  
+@media screen and (max-width: 768px) { 
+    .main { 
+        width: 80%; 
+        margin-right: 5px; 
+    } 
+  
+    .custom-wrapper { 
+        width: 100%; 
+        left: 0; 
+        padding: 0 10px; 
+    } 
+  
+    .projtitle { 
+        width: 100%; 
+        position: relative; 
+        right: 26px; 
+    } 
+  
+    .price-input { 
+        flex-direction: column; 
+        align-items: center; 
+    } 
+  
+    .price-field { 
+        margin-bottom: 10px; 
+    } 
+}
+</style>
+{% endblock %}
 {% block content %}
 
 <!-- Modal Search Start -->
@@ -55,7 +196,8 @@
                     <div class="col-xl-3">
                         <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
                             <label for="fruits">Default Sorting:</label>
-                            <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3" form="fruitform" onchange="updateProductList()">
+                            <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3"
+                                form="fruitform" onchange="updateProductList()">
                                 <option value="">Nothing</option>
                                 <option value="popularity">Popularity</option>
                                 <option value="price">Price Low to High</option>
@@ -74,10 +216,12 @@
                                         {% for category in categories %}
                                         <li>
                                             <div class="d-flex justify-content-between fruite-name">
-                                                <input type="checkbox" class="me-2 category-checkbox form-check-input" name="Categories-1" value="{{category.id}}" onchange="updateProductList()">
+                                                <input type="checkbox" class="me-2 category-checkbox form-check-input"
+                                                    name="Categories-1" value="{{category.id}}"
+                                                    onchange="updateProductList()">
                                                 <a href="#"><i class="fas fa-apple-alt me-2"></i>{{category.name}}</a>
-                                                
-                                                
+
+
                                                 <span>({{ category.inefficient_product_count }})</span>
                                             </div>
                                         </li>
@@ -85,213 +229,167 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
-                                <div class="mb-3">
-                                    <h4 class="mb-2">Price</h4>
-                                    <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput"
-                                        min="0" max="500" value="0" onchange="updateProductList()">
 
-                                    <output id="amount" name="amount" min-velue="0" max-value="500"
-                                        for="rangeInput">0</output>
-                                </div>
-                            </div>
+
                             <div class="col-lg-12">
                                 <div class="mb-3">
-                                    <h4>Additional</h4>
-                                    <div class="mb-2">
-                                        <input type="radio" class="me-2" id="Categories-1" name="Categories-1"
-                                            value="Beverages">
-                                        <label for="Categories-1"> Organic</label>
+                                    <div class="header">
+                                        <h2 class="projtitle">
+                                            Price Range Slider
+                                        </h2>
                                     </div>
-                                    <div class="mb-2">
-                                        <input type="radio" class="me-2" id="Categories-2" name="Categories-1"
-                                            value="Beverages">
-                                        <label for="Categories-2"> Fresh</label>
+
+                                    <div class="price-input-container">
+                                        <div class="price-input">
+                                            <div class="price-field">
+                                                <span>Minimum Price</span>
+                                                <input type="number" class="min-input" value="0">
+                                            </div>
+                                            <div class="price-field">
+                                                <span>Maximum Price</span>
+                                                <input type="number" class="max-input" value="5000">
+                                            </div>
+                                        </div>
+                                        <div class="slider-container">
+                                            <div class="price-slider">
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="mb-2">
-                                        <input type="radio" class="me-2" id="Categories-3" name="Categories-1"
-                                            value="Beverages">
-                                        <label for="Categories-3"> Sales</label>
-                                    </div>
-                                    <div class="mb-2">
-                                        <input type="radio" class="me-2" id="Categories-4" name="Categories-1"
-                                            value="Beverages">
-                                        <label for="Categories-4"> Discount</label>
-                                    </div>
-                                    <div class="mb-2">
-                                        <input type="radio" class="me-2" id="Categories-5" name="Categories-1"
-                                            value="Beverages">
-                                        <label for="Categories-5"> Expired</label>
+
+                                    <!-- Slider -->
+                                    <div class="range-input">
+                                        <input type="range" class="min-range" min="0" max="10000" value="0" step="1">
+                                        <input type="range" class="max-range" min="0" max="10000" value="5000" step="1">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
-                                <h4 class="mb-3">Featured products</h4>
-                                <div class="d-flex align-items-center justify-content-start">
-                                    <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                        <img src="img/featur-1.jpg" class="img-fluid rounded" alt="">
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-2">Big Banana</h6>
-                                        <div class="d-flex mb-2">
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <div class="d-flex mb-2">
-                                            <h5 class="fw-bold me-2">2.99 $</h5>
-                                            <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-start">
-                                    <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                        <img src="img/featur-2.jpg" class="img-fluid rounded" alt="">
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-2">Big Banana</h6>
-                                        <div class="d-flex mb-2">
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <div class="d-flex mb-2">
-                                            <h5 class="fw-bold me-2">2.99 $</h5>
-                                            <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-start">
-                                    <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                        <img src="img/featur-3.jpg" class="img-fluid rounded" alt="">
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-2">Big Banana</h6>
-                                        <div class="d-flex mb-2">
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star text-secondary"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <div class="d-flex mb-2">
-                                            <h5 class="fw-bold me-2">2.99 $</h5>
-                                            <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-center my-4">
-                                    <a href="#"
-                                        class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">Vew
-                                        More</a>
-                                </div>
+                
+
+
+                    <div class="col-lg-12">
+                        <div class="mb-3">
+                            <h4>Additional</h4>
+                            <div class="mb-2">
+                                <input type="radio" class="me-2" id="Categories-1" name="Categories-1"
+                                    value="Beverages">
+                                <label for="Categories-1"> Organic</label>
                             </div>
-                            <div class="col-lg-12">
-                                <div class="position-relative">
-                                    <img src="img/banner-fruits.jpg" class="img-fluid w-100 rounded" alt="">
-                                    <div class="position-absolute"
-                                        style="top: 50%; right: 10px; transform: translateY(-50%);">
-                                        <h3 class="text-secondary fw-bold">Fresh <br> Fruits <br> Banner</h3>
-                                    </div>
-                                </div>
+                            <div class="mb-2">
+                                <input type="radio" class="me-2" id="Categories-2" name="Categories-1"
+                                    value="Beverages">
+                                <label for="Categories-2"> Fresh</label>
+                            </div>
+                            <div class="mb-2">
+                                <input type="radio" class="me-2" id="Categories-3" name="Categories-1"
+                                    value="Beverages">
+                                <label for="Categories-3"> Sales</label>
+                            </div>
+                            <div class="mb-2">
+                                <input type="radio" class="me-2" id="Categories-4" name="Categories-1"
+                                    value="Beverages">
+                                <label for="Categories-4"> Discount</label>
+                            </div>
+                            <div class="mb-2">
+                                <input type="radio" class="me-2" id="Categories-5" name="Categories-1"
+                                    value="Beverages">
+                                <label for="Categories-5"> Expired</label>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-9">
-                        <div class="row g-4 justify-content-center" id='products'>
-
-                            {% for product in products %}
-                            <div class="col-md-6 col-lg-6 col-xl-4">
-                                <div class="rounded position-relative fruite-item">
-                                    <div class="fruite-img">
-                                        <img src="{{ product.image.url }}" class="img-fluid w-100 rounded-top"
-                                            alt="{{ product.title }}">
-                                    </div>
-                                    <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                                        style="top: 10px; left: 10px;">{{ product.category }}</div>
-                                    <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                        <h4>{{ product.title }}</h4>
-                                        <p>{{ product.descriptions|safe }}</p>
-                                        <!-- Safe filter to render HTML from QuillField -->
-                                        <div class="d-flex justify-content-between flex-lg-wrap">
-                                            <p class="text-dark fs-5 fw-bold mb-0">${{ product.price }} / {{
-                                                product.unit }}</p>
-                                            <a href="#"
-                                                class="btn border border-secondary rounded-pill px-3 text-primary">
-                                                <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
-                                            </a>
-                                        </div>
-                                    </div>
+                    <div class="col-lg-12">
+                        <h4 class="mb-3">Featured products</h4>
+                        <div class="d-flex align-items-center justify-content-start">
+                            <div class="rounded me-4" style="width: 100px; height: 100px;">
+                                <img src="img/featur-1.jpg" class="img-fluid rounded" alt="">
+                            </div>
+                            <div>
+                                <h6 class="mb-2">Big Banana</h6>
+                                <div class="d-flex mb-2">
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="d-flex mb-2">
+                                    <h5 class="fw-bold me-2">2.99 $</h5>
+                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
                                 </div>
                             </div>
-                            {% endfor %}
-
                         </div>
-                        <div class="col-12">
-                            <div class="pagination d-flex justify-content-center mt-5">
-                                {% if products.has_previous %}
-                                <a href="?page=1" class="rounded">&laquo; First</a>
-                                <a href="?page={{ products.previous_page_number }}" class="rounded">&lsaquo;
-                                    Previous</a>
-                                {% endif %}
-
-                                {% for num in products.paginator.page_range %}
-                                {% if products.number == num %}
-                                <a href="?page={{ num }}" class="active rounded">{{ num }}</a>
-                                {% else %}
-                                <a href="?page={{ num }}" class="rounded">{{ num }}</a>
-                                {% endif %}
-                                {% endfor %}
-
-                                {% if products.has_next %}
-                                <a href="?page={{ products.next_page_number }}" class="rounded">Next &rsaquo;</a>
-                                <a href="?page={{ products.paginator.num_pages }}" class="rounded">Last &raquo;</a>
-                                {% endif %}
+                        <div class="d-flex align-items-center justify-content-start">
+                            <div class="rounded me-4" style="width: 100px; height: 100px;">
+                                <img src="img/featur-2.jpg" class="img-fluid rounded" alt="">
+                            </div>
+                            <div>
+                                <h6 class="mb-2">Big Banana</h6>
+                                <div class="d-flex mb-2">
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="d-flex mb-2">
+                                    <h5 class="fw-bold me-2">2.99 $</h5>
+                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-start">
+                            <div class="rounded me-4" style="width: 100px; height: 100px;">
+                                <img src="img/featur-3.jpg" class="img-fluid rounded" alt="">
+                            </div>
+                            <div>
+                                <h6 class="mb-2">Big Banana</h6>
+                                <div class="d-flex mb-2">
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star text-secondary"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="d-flex mb-2">
+                                    <h5 class="fw-bold me-2">2.99 $</h5>
+                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center my-4">
+                            <a href="#"
+                                class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">Vew
+                                More</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="position-relative">
+                            <img src="img/banner-fruits.jpg" class="img-fluid w-100 rounded" alt="">
+                            <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
+                                <h3 class="text-secondary fw-bold">Fresh <br> Fruits <br> Banner</h3>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-</div>
-<script>
-    function updateProductList() {
-    let categoryInputs = document.querySelectorAll('[name="Categories-1"]:checked');
-    let categories = Array.from(categoryInputs).map(input => `categories=${input.value}`);
-    let categoryQuery = categories.join('&');
+            <div class="col-lg-9">
+                <div class="row g-4 justify-content-center" id='products'>
 
-    console.log('categoryQuery', categoryQuery); // Debugging output
-    let priceRange = document.getElementById('rangeInput').value;
-    let sortOption = document.getElementById('fruits').value;
-
-    fetch(`/products/filter_products/?${categoryQuery}&price_max=${priceRange}&sort_by=${sortOption}`)
-        .then(response => response.json())
-        .then(data => {
-            let productsDiv = document.getElementById('products');
-            productsDiv.innerHTML = '';  // Clear current products
-
-            data.products.forEach(product => {
-                const productHTML = `
+                    {% for product in products %}
                     <div class="col-md-6 col-lg-6 col-xl-4">
                         <div class="rounded position-relative fruite-item">
                             <div class="fruite-img">
-                                <img src="${product.image}" class="img-fluid w-100 rounded-top" alt="${product.title}">
+                                <img src="{{ product.image.url }}" class="img-fluid w-100 rounded-top"
+                                    alt="{{ product.title }}">
                             </div>
-                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
-                                ${product.category || ''}
-                            </div>
+                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                style="top: 10px; left: 10px;">{{ product.category }}</div>
                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                <h4>${product.title}</h4>
-                                <p>${product.descriptions || ''}
-                                </p>
+                                <h4>{{ product.title }}</h4>
+                                <p>{{ product.descriptions|safe }}</p>
+                                <!-- Safe filter to render HTML from QuillField -->
                                 <div class="d-flex justify-content-between flex-lg-wrap">
-                                    <p class="text-dark fs-5 fw-bold mb-0">$${product.price} / ${product.unit}</p>
+                                    <p class="text-dark fs-5 fw-bold mb-0">${{ product.price }} / {{
+                                        product.unit }}</p>
                                     <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary">
                                         <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
                                     </a>
@@ -299,13 +397,104 @@
                             </div>
                         </div>
                     </div>
-                `;
-                productsDiv.innerHTML += productHTML;
-            });
-        })
-        .catch(error => console.error('Error:', error));
-}
+                    {% endfor %}
 
+                </div>
+                <div class="col-12">
+                    <div class="pagination d-flex justify-content-center mt-5">
+                        {% if products.has_previous %}
+                        <a href="?page=1" class="rounded">&laquo; First</a>
+                        <a href="?page={{ products.previous_page_number }}" class="rounded">&lsaquo;
+                            Previous</a>
+                        {% endif %}
+
+                        {% for num in products.paginator.page_range %}
+                        {% if products.number == num %}
+                        <a href="?page={{ num }}" class="active rounded">{{ num }}</a>
+                        {% else %}
+                        <a href="?page={{ num }}" class="rounded">{{ num }}</a>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if products.has_next %}
+                        <a href="?page={{ products.next_page_number }}" class="rounded">Next &rsaquo;</a>
+                        <a href="?page={{ products.paginator.num_pages }}" class="rounded">Last &raquo;</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<script src='{% static "theme/js/slider.js" %}'></script>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Identifying the slider elements
+        const minRangeSlider = document.querySelector(".min-range");
+        const maxRangeSlider = document.querySelector(".max-range");
+
+        // Adding event listeners to both sliders
+        [minRangeSlider, maxRangeSlider].forEach(slider => {
+            slider.addEventListener("blur", () => {
+                console.log('Slider lost focus:', slider.className);
+                updateProductList();
+            });
+        });
+    });
+
+    function updateProductList() {
+        let categoryInputs = document.querySelectorAll('[name="Categories-1"]:checked');
+        let categories = Array.from(categoryInputs).map(input => `categories=${input.value}`);
+        let categoryQuery = categories.join('&');
+
+        let sortOption = document.getElementById('fruits').value;
+
+        // Getting values from sliders
+        let minPrice = document.querySelector('.min-range').value;
+        let maxPrice = document.querySelector('.max-range').value;
+
+        // Fetch request with price range
+        fetch(`/products/filter_products/?${categoryQuery}&price_min=${minPrice}&price_max=${maxPrice}&sort_by=${sortOption}`)
+            .then(response => response.json())
+            .then(data => updateProductsDisplay(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function updateProductsDisplay(data) {
+        let productsDiv = document.getElementById('products');
+        productsDiv.innerHTML = '';  // Clear current products
+
+        data.products.forEach(product => {
+            const productHTML = `
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                    <div class="rounded position-relative fruite-item">
+                        <div class="fruite-img">
+                            <img src="${product.image}" class="img-fluid w-100 rounded-top" alt="${product.title}">
+                        </div>
+                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category || ''}</div>
+                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                            <h4>${product.title}</h4>
+                            <p>${product.descriptions || ''}</p>
+                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                <p class="text-dark fs-5 fw-bold mb-0">$${product.price} / ${product.unit}</p>
+                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                    <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            productsDiv.innerHTML += productHTML;
+        });
+    }
 </script>
+
 <!-- Fruits Shop End-->
 {% endblock %}

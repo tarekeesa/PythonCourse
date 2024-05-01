@@ -53,6 +53,7 @@ def product_list_view(request):
     return render(request, 'products/product_list.html', context)
 
 
+from django.db.models import Count
 
 def filter_products(request):
     category_ids = request.GET.getlist('categories')
@@ -68,8 +69,16 @@ def filter_products(request):
         print('products',products)
     if price_min and price_max:
         products = products.filter(price__gte=price_min, price__lte=price_max)
-    # if sort_by:
-    #     products = products.order_by(sort_by)
+
+    # Handling sorting
+    if sort_by:
+        # Assume 'popularity' might be sorted by a 'likes' count or similar field, adjust as needed
+        if sort_by == 'popularity':
+            products = products.annotate(likes_count=Count('likes')).order_by('-likes_count')
+        elif sort_by == 'price':
+            products = products.order_by('price')
+        elif sort_by == '-price':
+            products = products.order_by('-price')
 
     # Prepare data for JSON response
     products_data = []
