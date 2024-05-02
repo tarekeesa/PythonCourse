@@ -4,27 +4,9 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 import os, random
 from mptt.models import MPTTModel, TreeForeignKey
-from ecommerce.utils import unique_slug_generator, get_filename
+from ecommerce.utils import unique_slug_generator, get_filename, upload_image_path
 from django.db.models import Count
 
-
-def get_filename_ext(filepath):
-    base_name = os.path.basename(filepath)
-    name, ext = os.path.splitext(base_name)
-    return name, ext
-
-
-def upload_image_path(instance, filename):
-    # print(instance)
-    # print(filename)
-    new_filename = random.randint(1, 3910209312)
-    name, ext = get_filename_ext(filename)
-    final_filename = '{new_filename}{ext}'.format(
-        new_filename=new_filename, ext=ext)
-    return "products/{new_filename}/{final_filename}".format(
-        new_filename=new_filename,
-        final_filename=final_filename
-    )
 
 class ProductQuerySet(models.query.QuerySet):
     def active(self):
