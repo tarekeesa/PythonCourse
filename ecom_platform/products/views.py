@@ -44,10 +44,12 @@ def product_list_view(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         products = paginator.page(paginator.num_pages)
 
+    featured_products = Product.objects.filter(active=True, featured=True).order_by('-id')[:5]
     categories = Category.objects.filter(products__isnull=False).distinct()
 
     context = {
         'products': products,
+        'featured_products':featured_products,
         'categories': categories,
     }
     return render(request, 'products/product_list.html', context)

@@ -4,7 +4,7 @@
 {% block header %}
 <style>
      
-.gfg { 
+     .gfg { 
     display: flex; 
     align-items: center; 
     justify-content: center; 
@@ -101,6 +101,7 @@ input::-webkit-inner-spin-button {
     top: -5px; 
     pointer-events: none; 
     cursor: pointer; 
+    -webkit-appearance: none; 
 } 
   
 /* Styles for the range thumb in WebKit browsers */
@@ -210,7 +211,11 @@ input[type="range"]::-webkit-slider-thumb {
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="mb-3">
-                                    <h4>Categories</h4>
+                                    <div class="header">
+                                        <h2 class="projtitle">
+                                            Categories
+                                        </h2>
+                                    </div>
                                     <ul class="list-unstyled fruite-categorie">
                                         {% for category in categories %}
                                         <li>
@@ -262,47 +267,20 @@ input[type="range"]::-webkit-slider-thumb {
                                     </div>
                                 </div>
                             </div>
-                
-
-
+            
                     <div class="col-lg-12">
-                        <div class="mb-3">
-                            <h4>Additional</h4>
-                            <div class="mb-2">
-                                <input type="radio" class="me-2" id="Categories-1" name="Categories-1"
-                                    value="Beverages">
-                                <label for="Categories-1"> Organic</label>
-                            </div>
-                            <div class="mb-2">
-                                <input type="radio" class="me-2" id="Categories-2" name="Categories-1"
-                                    value="Beverages">
-                                <label for="Categories-2"> Fresh</label>
-                            </div>
-                            <div class="mb-2">
-                                <input type="radio" class="me-2" id="Categories-3" name="Categories-1"
-                                    value="Beverages">
-                                <label for="Categories-3"> Sales</label>
-                            </div>
-                            <div class="mb-2">
-                                <input type="radio" class="me-2" id="Categories-4" name="Categories-1"
-                                    value="Beverages">
-                                <label for="Categories-4"> Discount</label>
-                            </div>
-                            <div class="mb-2">
-                                <input type="radio" class="me-2" id="Categories-5" name="Categories-1"
-                                    value="Beverages">
-                                <label for="Categories-5"> Expired</label>
-                            </div>
+                        <div class="header">
+                            <h2 class="projtitle">
+                                Featured products
+                            </h2>
                         </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <h4 class="mb-3">Featured products</h4>
+                        {% for product in featured_products %}
                         <div class="d-flex align-items-center justify-content-start">
                             <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                <img src="img/featur-1.jpg" class="img-fluid rounded" alt="">
+                                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="">
                             </div>
                             <div>
-                                <h6 class="mb-2">Big Banana</h6>
+                                <h6 class="mb-2">{{product.title}}</h6>
                                 <div class="d-flex mb-2">
                                     <i class="fa fa-star text-secondary"></i>
                                     <i class="fa fa-star text-secondary"></i>
@@ -311,61 +289,17 @@ input[type="range"]::-webkit-slider-thumb {
                                     <i class="fa fa-star"></i>
                                 </div>
                                 <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+                                    <h5 class="fw-bold me-2">{{product.cost}} $</h5>
+                                    <h5 class="text-danger text-decoration-line-through">{{product.price}} $</h5>
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                <img src="img/featur-2.jpg" class="img-fluid rounded" alt="">
-                            </div>
-                            <div>
-                                <h6 class="mb-2">Big Banana</h6>
-                                <div class="d-flex mb-2">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                <img src="img/featur-3.jpg" class="img-fluid rounded" alt="">
-                            </div>
-                            <div>
-                                <h6 class="mb-2">Big Banana</h6>
-                                <div class="d-flex mb-2">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                </div>
-                            </div>
-                        </div>
+                        {% endfor %}
+
                         <div class="d-flex justify-content-center my-4">
                             <a href="#"
                                 class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">Vew
                                 More</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="position-relative">
-                            <img src="img/banner-fruits.jpg" class="img-fluid w-100 rounded" alt="">
-                            <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
-                                <h3 class="text-secondary fw-bold">Fresh <br> Fruits <br> Banner</h3>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -387,8 +321,8 @@ input[type="range"]::-webkit-slider-thumb {
                                 <p>{{ product.descriptions|safe }}</p>
                                 <!-- Safe filter to render HTML from QuillField -->
                                 <div class="d-flex justify-content-between flex-lg-wrap">
-                                    <p class="text-dark fs-5 fw-bold mb-0">${{ product.price }} / {{
-                                        product.unit }}</p>
+                                    <p class="text-dark fs-5 fw-bold mb-0">${{ product.price }} / 
+                                        {{product.unit }}</p>
                                     <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary">
                                         <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
                                     </a>
