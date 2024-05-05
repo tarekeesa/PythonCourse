@@ -30,6 +30,8 @@ $(document).ready(function() {
                 <a href="#" class="btn btn-danger remove-item-btn" data-product-id="${productId}">
                     <i class="fa fa-trash"></i> Remove
                 </a>`);
+                $('.cart-count').text(response.cart_count);  // Update the cart count in the UI
+
             },
             error: function() {
                 alert('Error adding product to cart.');
@@ -49,6 +51,8 @@ $(document).ready(function() {
                 productActions.html(`<a href="#" class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart-btn" data-product-id="${productId}">
                     <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to Cart
                 </a>`);
+                $('.cart-count').text(response.cart_count);  // Update the cart count in the UI
+
             },
             error: function() {
                 alert('Error removing product from cart.');

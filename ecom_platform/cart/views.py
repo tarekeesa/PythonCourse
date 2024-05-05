@@ -20,7 +20,12 @@ def add_to_cart(request):
         cart_item.quantity += 1
         cart_item.save()
 
-    return JsonResponse({'message': 'Product added successfully'})
+    cart_count = cart.cartitem_set.count()
+    return JsonResponse({
+        'cart_count': cart_count,
+        'message': 'Item added successfully'
+        })
+
 
 def view_cart(request):
     if request.user.is_authenticated:
@@ -43,7 +48,10 @@ def update_cart_item(request):
 
     cart = cart_item.cart
     item_total = cart_item.get_total_price()
+    cart_count = cart.cartitem_set.count()
+
     return JsonResponse({
+        'cart_count': cart_count,
         'subtotal': cart.get_total_price(),
         'total': cart.get_total_price() + 3.00,
         'item_total': float(item_total)
@@ -56,9 +64,11 @@ def remove_cart_item(request):
     cart_item = CartItem.objects.get(id=item_id)
     cart = cart_item.cart
     cart_item.delete()
+    cart_count = Cart.objects.get(user=request.user).cartitem_set.count()  # Update count after removal
 
     return JsonResponse({
         'success': True,
+        'cart_count': cart_count,
         'subtotal': cart.get_total_price(),
         'total': cart.get_total_price() + 3
     })
@@ -72,6 +82,7 @@ def remove_from_cart(request):
     item = CartItem.objects.get(product__id=product_id)
     if item.cart.user == request.user:  # Check ownership
         item.delete()
-        return JsonResponse({'success': True, 'message': 'Item removed successfully'})
+        cart_count = Cart.objects.get(user=request.user).cartitem_set.count()  # Update count after removal
+        return JsonResponse({'success': True, 'cart_count': cart_count, 'message': 'Item removed successfully'})
     else:
         return JsonResponse({'success': False, 'error': 'Unauthorized'}, status=403)
