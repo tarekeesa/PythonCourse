@@ -323,9 +323,8 @@ input[type="range"]::-webkit-slider-thumb {
                                 <div class="d-flex justify-content-between flex-lg-wrap">
                                     <p class="text-dark fs-5 fw-bold mb-0">${{ product.price }} / 
                                         {{product.unit }}</p>
-                                    <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary">
-                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
-                                    </a>
+                                        {% include "products/add_to_cart_button.html" %}
+
                                 </div>
                             </div>
                         </div>
@@ -437,7 +436,5 @@ input[type="range"]::-webkit-slider-thumb {
         });
     }
     </script>
-    
 
-<!-- Fruits Shop End-->
 {% endblock %}

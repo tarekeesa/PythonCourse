@@ -36,45 +36,43 @@
                 <tbody>
                     <tr>
                       {% for cart_item in cart_items %}
-                    <tr>
-                        <th scope="row">
-                            <div class="d-flex align-items-center">
-                                <img src="{{ cart_item.product.image.url }}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="{{ cart_item.product.title }}">
-                            </div>
-                        </th>
-                        <td>
-                            <p class="mb-0 mt-4">{{ cart_item.product.title }}</p>
-                        </td>
-                        <td>
-                            <p class="mb-0 mt-4">{{ cart_item.price|floatformat:"1" }} $</p>
-                        </td>
-                        <td>
-                            <div class="input-group quantity mt-4" style="width: 100px;">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border">
-                                        <i class="fa fa-minus"></i>
-                                    </button>
-                                </div>
-                                <input type="text" class="form-control form-control-sm text-center border-0" value="{{ cart_item.quantity|floatformat:'0' }}">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="mb-0 mt-4">{{ cart_item.price|floatformat:"1"|multiply:cart_item.quantity|floatformat:"1" }} $</p>
-                        </td>
-                        <td>
-                            <button class="btn btn-md rounded-circle bg-light border mt-4" >
-                                <i class="fa fa-times text-danger"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-
-                
+                      <tr data-item-id="{{ cart_item.id }}">
+                          <th scope="row">
+                              <div class="d-flex align-items-center">
+                                  <img src="{{ cart_item.product.image.url }}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="{{ cart_item.product.title }}">
+                              </div>
+                          </th>
+                          <td>
+                              <p class="mb-0 mt-4">{{ cart_item.product.title }}</p>
+                          </td>
+                          <td>
+                              <p class="mb-0 mt-4">{{ cart_item.price|floatformat:"1" }} $</p>
+                          </td>
+                          <td>
+                              <div class="input-group quantity mt-4" style="width: 100px;">
+                                  <div class="input-group-btn">
+                                      <button class="btn btn-sm btn-minus rounded-circle bg-light border" data-item-id="{{ cart_item.id }}">
+                                          <i class="fa fa-minus"></i>
+                                      </button>
+                                  </div>
+                                  <input type="text" class="form-control form-control-sm text-center border-0" value="{{ cart_item.quantity|floatformat:'0' }}" data-item-id="{{ cart_item.id }}">
+                                  <div class="input-group-btn">
+                                      <button class="btn btn-sm btn-plus rounded-circle bg-light border" data-item-id="{{ cart_item.id }}">
+                                          <i class="fa fa-plus"></i>
+                                      </button>
+                                  </div>
+                              </div>
+                          </td>
+                          <td>
+                              <p class="mb-0 mt-4" id="item-total-{{ cart_item.id }}">{{ cart_item.price|floatformat:"1"|multiply:cart_item.quantity|floatformat:"1" }} $</p>
+                          </td>
+                          <td>
+                              <button class="btn btn-md rounded-circle bg-light border mt-4 btn-times" data-item-id="{{ cart_item.id }}">
+                                  <i class="fa fa-times text-danger"></i>
+                              </button>
+                          </td>
+                      </tr>
+                      {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -90,18 +88,18 @@
                         <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
                         <div class="d-flex justify-content-between mb-4">
                             <h5 class="mb-0 me-4">Subtotal:</h5>
-                            <p class="mb-0">${{total_price|floatformat:"1"}}</p>
+                            <p  id='subtotal' class="mb-0">${{total_price|floatformat:"1"}}</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <h5 class="mb-0 me-4">Shipping</h5>
+                            <h5  class="mb-0 me-4">Shipping</h5>
                             <div class="">
-                                <p class="mb-0">Flat rate: $3.00</p>
+                                <p  class="mb-0">Flat rate: $3.00</p>
                             </div>
                         </div>
                     </div>
                     <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                       <h5 class="mb-0 ps-4 me-4">Total</h5>
-                      <p class="mb-0 pe-4">${{ total_price|floatformat:"1"|sumup:3.00|floatformat:"1" }}</p>
+                      <p id="total" class="mb-0 pe-4">${{ total_price|floatformat:"1"|sumup:3.00|floatformat:"1" }}</p>
                   </div>
                   
                     <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">Proceed Checkout</button>
@@ -112,21 +110,73 @@
 </div>
 <!-- Cart Page End -->
 
-
-</ul>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-//     // Add to Cart AJAX
-// $(document).on('click', '.add-to-cart-btn', function() {
-//   var product_id = $(this).data('product-id');
-//   $.ajax({
-//     type: 'POST',
-//     url: '/cart/add-to-cart/' + product_id + '/',
-//     success: function(response) {
-//       // Update cart count in UI
-//       $('#cart-count').text(response.cart_count);
-//     }
-//   });
-// });
-
-</script>
+  $(document).ready(function() {
+      $('.btn-plus, .btn-minus').on('click', function(e) {
+          const isPositive = $(e.target).closest('.btn-plus').length > 0;
+          const input = $(this).closest('.quantity').find('input');
+          let quantity = parseInt(input.val());
+          quantity = isPositive ? quantity + 1 : quantity - 1;
+          quantity = quantity < 1 ? 1 : quantity;
+  
+          // Update the server and then update UI based on response
+          updateCartItem(input.data('item-id'), quantity, input);
+      });
+  
+      $('.btn-times').on('click', function() {
+          const itemId = $(this).data('item-id');
+          removeCartItem(itemId);
+      });
+  
+      function updateCartItem(itemId, quantity, input) {
+          $.ajax({
+              type: 'POST',
+              url: '/cart/update-item/',
+              data: {
+                  'item_id': itemId,
+                  'quantity': quantity,
+                  'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+              },
+              success: function(response) {
+                  console.log(response);  // Debugging to see what the response contains
+                  if(response.subtotal !== undefined && response.total !== undefined) {
+                      $('#subtotal').text('$' + response.subtotal.toFixed(1));
+                      $('#total').text('$' + response.total.toFixed(1));
+                  }
+                  if(response.item_total !== undefined) {
+                      $('#item-total-' + itemId).text('$' + response.item_total.toFixed(1));
+                  }
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error in AJAX request:", status, error);
+              }
+          });
+      }
+  
+      function removeCartItem(itemId) {
+          $.ajax({
+              type: 'POST',
+              url: '/cart/remove-item/',
+              data: {
+                  'item_id': itemId,
+                  'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+              },
+              success: function(response) {
+                  if (response.success) {
+                      $('tr[data-item-id="' + itemId + '"]').remove();
+                      if(response.subtotal !== undefined && response.total !== undefined) {
+                          $('#subtotal').text('$' + response.subtotal.toFixed(1));
+                          $('#total').text('$' + response.total.toFixed(1));
+                      }
+                  }
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error in AJAX request:", status, error);
+              }
+          });
+      }
+  });
+  </script>
+  
 {% endblock %}

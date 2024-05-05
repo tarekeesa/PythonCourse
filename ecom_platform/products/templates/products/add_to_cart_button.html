@@ -1,0 +1,19 @@
+{% load cart_tags %}
+
+<div class="product-actions">
+    {% with is_in_cart=product.id|in_cart:request.user %}
+    {% if is_in_cart %}
+        <a href="{% url 'cart:list' %}" class="btn border border-secondary rounded-pill px-3 text-primary">
+            <i class="fa fa-shopping-cart me-2 text-primary"></i> In Cart
+        </a>
+        <a href="#" class="btn btn-danger remove-item-btn" data-product-id="{{ product.id }}">
+            <i class="fa fa-trash"></i> Remove
+        </a>
+    {% else %}
+        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart-btn"
+           data-product-id="{{ product.id }}">
+            <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to Cart
+        </a>
+    {% endif %}
+    {% endwith %}
+</div>

@@ -1,22 +1,26 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from products.models import Product
 from .models import Cart, CartItem
+from django.contrib.auth.decorators import login_required
 
-def add_to_cart(request, product_id, quantity=1):
-    product = Product.objects.get(pk=product_id)
-    if request.user.is_authenticated:
-        cart, created = Cart.objects.get_or_create(user=request.user)
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-        if not created:
-            cart_item.quantity += quantity  # Now increments by provided quantity
-        else:
-            cart_item.quantity = quantity
+
+@require_POST
+@login_required
+def add_to_cart(request):
+    product_id = request.POST.get('product_id')
+    product = Product.objects.get(id=product_id)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product,price=product.price)
+
+    if not created:
+        cart_item.quantity += 1
         cart_item.save()
-        messages.success(request, "Product added to cart successfully!")
-    else:
-        messages.error(request, "You need to login to add items to your cart.")
-    return redirect('products:list')
+
+    return JsonResponse({'message': 'Product added successfully'})
 
 def view_cart(request):
     if request.user.is_authenticated:
@@ -27,3 +31,47 @@ def view_cart(request):
     else:
         return redirect('users:login')
 
+
+@require_POST
+@csrf_exempt
+def update_cart_item(request):
+    item_id = request.POST.get('item_id')
+    quantity = int(request.POST.get('quantity'))
+    cart_item = CartItem.objects.get(id=item_id)
+    cart_item.quantity = quantity
+    cart_item.save()
+
+    cart = cart_item.cart
+    item_total = cart_item.get_total_price()
+    return JsonResponse({
+        'subtotal': cart.get_total_price(),
+        'total': cart.get_total_price() + 3.00,
+        'item_total': float(item_total)
+    })
+
+@require_POST
+@csrf_exempt
+def remove_cart_item(request):
+    item_id = request.POST.get('item_id')
+    cart_item = CartItem.objects.get(id=item_id)
+    cart = cart_item.cart
+    cart_item.delete()
+
+    return JsonResponse({
+        'success': True,
+        'subtotal': cart.get_total_price(),
+        'total': cart.get_total_price() + 3
+    })
+
+
+@require_POST
+@login_required
+def remove_from_cart(request):
+    product_id = request.POST.get('product_id')
+    print('product_id',product_id)
+    item = CartItem.objects.get(product__id=product_id)
+    if item.cart.user == request.user:  # Check ownership
+        item.delete()
+        return JsonResponse({'success': True, 'message': 'Item removed successfully'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Unauthorized'}, status=403)

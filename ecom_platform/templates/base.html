@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Fruitables - Vegetable Website Template</title>
+    <title>Fruitables - Vegetable Website</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -27,6 +27,10 @@
     {% include 'footer.html' with brand_name='eCommerce' %}
     <!-- Back to Top -->
     {% include 'theme/js.html' %}
+    <script>
+    var generated_csrf_token = '{{ csrf_token }}';
+    console.log('generated_csrf_token',generated_csrf_token)
+    </script>
 
 </body>
 
