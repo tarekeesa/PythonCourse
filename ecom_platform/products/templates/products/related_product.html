@@ -1,0 +1,16 @@
+<div class="border border-primary rounded position-relative vesitable-item">
+    <a href="{% url 'products:product_detail' product.slug %}" >
+    <div class="vesitable-img">
+        <img src="{{product.image.url}}" class="img-fluid w-50 rounded-top" alt="">
+    </div>
+    <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">{{ product.category.name }}</div>
+    <div class="p-4 pb-0 rounded-bottom">
+        <h4>{{product.title}}</h4>
+        <p>{{product.descriptions.html|safe|linebreaks|truncatewords:9 }}</p>
+        <div class="d-flex justify-content-between flex-lg-wrap">
+            <p class="text-dark fs-5 fw-bold">${{product.price}} / kg</p>
+            {% include "products/add_to_cart_button.html" with product=product %}
+        </div>
+    </div>
+    </a>
+</div>

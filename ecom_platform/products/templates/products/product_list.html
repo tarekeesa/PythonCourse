@@ -167,14 +167,8 @@ input[type="range"]::-webkit-slider-thumb {
 
 
 <!-- Single Page Header start -->
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6">Shop</h1>
-    <ol class="breadcrumb justify-content-center mb-0">
-        <li class="breadcrumb-item"><a href="#">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Pages</a></li>
-        <li class="breadcrumb-item active text-white">Shop</li>
-    </ol>
-</div>
+{% include "singlepageheader.html" with page="shop" %}
+
 <!-- Single Page Header End -->
 
 
@@ -292,6 +286,7 @@ input[type="range"]::-webkit-slider-thumb {
 
                     {% for product in products %}
                     <div class="col-md-6 col-lg-6 col-xl-4">
+                        <a href="{% url 'products:product_detail' product.slug %}" >
                         <div class="rounded position-relative fruite-item">
                             <div class="fruite-img">
                                 <img src="{{ product.image.url }}" class="img-fluid w-100 rounded-top"
@@ -311,6 +306,7 @@ input[type="range"]::-webkit-slider-thumb {
                                 </div>
                             </div>
                         </div>
+                    </a>
                     </div>
                     {% endfor %}
 
