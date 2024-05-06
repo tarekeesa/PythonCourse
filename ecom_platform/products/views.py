@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView,DetailView
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
+from django.db.models import Count
 
+from .utils import replace_model_placeholders
 from .models import Category, Product
-# Create your views here.
 
 class ProductListView(ListView):
     model = Product
@@ -55,7 +56,23 @@ def product_list_view(request):
     return render(request, 'products/product_list.html', context)
 
 
-from django.db.models import Count
+def product_detail_view(request, slug):
+    product = get_object_or_404(Product, slug=slug, active=True)
+    # processed_content = replace_model_placeholders(product.content, request=request)
+    categories = Category.objects.filter(products__isnull=False).distinct()
+    processed_content = replace_model_placeholders(product.content)
+    print('processed_content',processed_content)
+    featured_products = Product.objects.filter(active=True, featured=True).order_by('-id')[:5]
+
+    context = {
+        'product': product,
+        'categories': categories,
+        'featured_products':featured_products,
+
+        'processed_content': processed_content  # Pass the modified content to the template
+    }
+
+    return render(request, 'products/product_detail.html', context)
 
 def filter_products(request):
     category_ids = request.GET.getlist('categories')

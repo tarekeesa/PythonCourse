@@ -275,25 +275,8 @@ input[type="range"]::-webkit-slider-thumb {
                             </h2>
                         </div>
                         {% for product in featured_products %}
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="">
-                            </div>
-                            <div>
-                                <h6 class="mb-2">{{product.title}}</h6>
-                                <div class="d-flex mb-2">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">{{product.cost}} $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">{{product.price}} $</h5>
-                                </div>
-                            </div>
-                        </div>
+                        {% include "products/featured_product.html" with product=product %}
+                       
                         {% endfor %}
 
                         <div class="d-flex justify-content-center my-4">

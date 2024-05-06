@@ -6,6 +6,7 @@ import os, random
 from mptt.models import MPTTModel, TreeForeignKey
 from ecommerce.utils import unique_slug_generator, get_filename, upload_image_path
 from django.db.models import Count
+from tinymce.models import HTMLField
 
 
 class ProductQuerySet(models.query.QuerySet):
@@ -72,6 +73,8 @@ class Product(models.Model):
     active = models.BooleanField(default=True)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
     descriptions = QuillField(blank=True,null=True)
+    content = HTMLField(null=True)
+
     created_at=models.DateTimeField(auto_now=True,null=True) 
     is_digital = models.BooleanField(default=False)
     store   = models.CharField(max_length=120,null=True)
@@ -79,11 +82,22 @@ class Product(models.Model):
     unit = models.CharField(max_length= 50,choices = PRICE_UNITS_CHOICES,default='')
     category = TreeForeignKey('Category',null=True,blank=True,on_delete=models.CASCADE,related_query_name='products')
 
+    weight = models.CharField(max_length=50, default='1 kg')  # Weight of the product
+    country_of_origin = models.CharField(max_length=100, default='Agro Farm')  # Country of origin
+    quality = models.CharField(max_length=100, default='Organic')  # Quality standard
+    health_check = models.CharField(max_length=100, default='Healthy')  # Health certification or check
+    min_weight = models.CharField(max_length=50, default='250 gm')  # Minimum weight per package
+
     objects = ProductManager()
 
     class Meta:
         indexes = [
             models.Index(fields=['title','store','active','featured','price','unit','cost','quantity','descriptions', 'is_digital','slug','created_at','category']),
+            models.Index(fields=['weight']),
+            models.Index(fields=['country_of_origin']),
+            models.Index(fields=['quality']),
+            models.Index(fields=['health_check']),
+            models.Index(fields=['min_weight']),
         ]
 
 
@@ -136,3 +150,22 @@ class Category(MPTTModel):
     @property
     def title(self):
         return self.name
+    
+
+
+class Comment(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.user.username} on {self.product.title}"
+
+class Rating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    score = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"Rating by {self.user.username} for {self.product.title}"
