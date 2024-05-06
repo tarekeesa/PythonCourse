@@ -20,12 +20,12 @@ from django.conf import settings
 from django.urls import path, include
 from django.conf.urls.static import static
 
-from ecommerce.views import about_page, contact_page, home_page
+from ecommerce.views import about_page, home_page, submit_contact
 
 urlpatterns = [
     path('', home_page, name='home'),
     path('about', about_page, name='about'),
-    path('contact', contact_page, name='contact'),
+    path('submit-contact/', submit_contact, name='submit_contact'),
     path('products/', include("products.urls", namespace='products')),
     path('cart/', include("cart.urls", namespace='cart')),
     path('tinymce/', include('tinymce.urls')),

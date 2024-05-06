@@ -1,6 +1,9 @@
 from django.shortcuts import render
 
 from products.models import Product
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from .forms import ContactForm
 
 
 
@@ -21,9 +24,13 @@ def about_page(request):
     }
     return render(request, "home_page.html",context)
 
-def contact_page(request):
-    context = {
-        'message' : 'Contact Page'
-    }
-    return render(request, "home_page.html",context)
+def submit_contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"success": True, "message": "Thank you for contacting us!"})
+        else:
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
+    return render(request, "contact.html")

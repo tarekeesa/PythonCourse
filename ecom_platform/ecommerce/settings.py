@@ -165,16 +165,19 @@ TINYMCE_DEFAULT_CONFIG = {
     "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
     "a11ycheck ltr rtl | showcomments addcomment code",
     "custom_undo_redo_levels": 10,
+    'content_css': [
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css',\
+    ],
+    'content_js' : [
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js'
+    ]
+
+
 }
-# TINYMCE_SPELLCHECKER = True
+TINYMCE_SPELLCHECKER = True
 # TINYMCE_COMPRESSOR = True
-# TINYMCE_EXTRA_MEDIA = {
-#     'css': {
-#         'all': [
-#             ...
-#         ],
-#     },
-#     'js': [
-#         ...
-#     ],
-# }
+TINYMCE_EXTRA_MEDIA = {
+    'js': [
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js'
+    ],
+}
