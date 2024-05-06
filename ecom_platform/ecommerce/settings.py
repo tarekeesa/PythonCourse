@@ -46,9 +46,14 @@ INSTALLED_APPS = [
     'users',
     'cart',
     'tinymce',
-
-    
+    'star_ratings',
 ]
+STAR_RATINGS_STAR_WIDTH=18
+STAR_RATINGS_ANONYMOUS = False
+STAR_RATINGS_RERATE = True
+STAR_RATINGS_RERATE_SAME_DELETE = True
+
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',

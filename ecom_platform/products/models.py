@@ -7,6 +7,8 @@ from mptt.models import MPTTModel, TreeForeignKey
 from ecommerce.utils import unique_slug_generator, get_filename, upload_image_path
 from django.db.models import Count
 from tinymce.models import HTMLField
+from django.contrib.contenttypes.fields import GenericRelation
+from star_ratings.models import Rating
 
 
 class ProductQuerySet(models.query.QuerySet):
@@ -87,6 +89,7 @@ class Product(models.Model):
     quality = models.CharField(max_length=100, default='Organic')  # Quality standard
     health_check = models.CharField(max_length=100, default='Healthy')  # Health certification or check
     min_weight = models.CharField(max_length=50, default='250 gm')  # Minimum weight per package
+    ratings = GenericRelation(Rating, related_query_name='foos')
 
     objects = ProductManager()
 
@@ -161,11 +164,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.product.title}"
-
-class Rating(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    score = models.IntegerField(default=1)
-
-    def __str__(self):
-        return f"Rating by {self.user.username} for {self.product.title}"

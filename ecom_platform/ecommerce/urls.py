@@ -31,6 +31,7 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
 
     path('', include("users.urls", namespace='users')),
+    path('ratings/', include('star_ratings.urls', namespace='ratings')),
 
     path('admin/', admin.site.urls), # admin site
 ]
