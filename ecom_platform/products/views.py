@@ -4,9 +4,27 @@ from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.db.models import Count
+from django.contrib.auth.decorators import login_required
+
 
 from .utils import replace_model_placeholders
-from .models import Category, Product
+from .models import Category, Product,Comment
+
+
+@login_required
+def submit_comment(request, product_id):
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            comment = Comment.objects.create(product_id=product_id, user=request.user, content=content)
+            return JsonResponse({
+                'username': request.user.username, 
+                'content': comment.content
+            }, status=201)
+        else:
+            return JsonResponse({'error': 'Content is required'}, status=400)
+    return JsonResponse({'error': 'This method only supports POST'}, status=400)
+
 
 class ProductListView(ListView):
     model = Product
@@ -63,9 +81,10 @@ def product_detail_view(request, slug):
     processed_content = replace_model_placeholders(product.content)
     print('processed_content',processed_content)
     featured_products = Product.objects.filter(active=True, featured=True).order_by('-id')[:5]
-
+    comments = Comment.objects.filter(product=product).all()
     context = {
         'product': product,
+        'comments':comments,
         'categories': categories,
         'featured_products':featured_products,
 
