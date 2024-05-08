@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'cart',
     'tinymce',
     'star_ratings',
+    'checkout',
 ]
 STAR_RATINGS_STAR_WIDTH=18
 STAR_RATINGS_ANONYMOUS = False

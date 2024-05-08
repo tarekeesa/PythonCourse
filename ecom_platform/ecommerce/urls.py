@@ -28,6 +28,8 @@ urlpatterns = [
     path('submit-contact/', submit_contact, name='submit_contact'),
     path('products/', include("products.urls", namespace='products')),
     path('cart/', include("cart.urls", namespace='cart')),
+    path('checkout/', include("checkout.urls", namespace='checkout')),
+
     path('tinymce/', include('tinymce.urls')),
 
     path('', include("users.urls", namespace='users')),
