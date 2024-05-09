@@ -9,32 +9,39 @@ from django.contrib.auth.decorators import login_required
 
 
 @require_POST
-@login_required
 def add_to_cart(request):
     product_id = request.POST.get('product_id')
+    quantity = int(request.POST.get('quantity', 1))
     product = Product.objects.get(id=product_id)
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product,price=product.price)
+
+    # Get cart by session key if user is not authenticated
+    if request.user.is_authenticated:
+        cart, created = Cart.objects.get_or_create(user=request.user)
+    else:
+        session_id = request.session.session_key or request.session.create()
+        cart, created = Cart.objects.get_or_create(session_id=session_id)
+
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'price': product.price})
 
     if not created:
-        cart_item.quantity += 1
+        cart_item.quantity += quantity
         cart_item.save()
 
-    cart_count = cart.cartitem_set.count()
-    return JsonResponse({
-        'cart_count': cart_count,
-        'message': 'Item added successfully'
-        })
+    return JsonResponse({'message': 'Item added successfully', 'cart_count': cart.cartitem_set.count()})
 
 
 def view_cart(request):
+    # Retrieve cart based on session or user
     if request.user.is_authenticated:
         cart, _ = Cart.objects.get_or_create(user=request.user)
-        cart_items = cart.cartitem_set.all()
-        total_price = cart.get_total_price()
-        return render(request, 'cart/view_cart.html', {'cart_items': cart_items, 'total_price': total_price})
     else:
-        return redirect('users:login')
+        session_id = request.session.session_key or request.session.create()
+        cart, _ = Cart.objects.get_or_create(session_id=session_id)
+        print('cart',cart)
+
+    cart_items = cart.cartitem_set.all()
+    total_price = cart.get_total_price()
+    return render(request, 'cart/view_cart.html', {'cart_items': cart_items, 'total_price': total_price})
 
 
 @require_POST

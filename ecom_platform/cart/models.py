@@ -5,17 +5,20 @@ from products.models import Product
 User = get_user_model()
 
 class Cart(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
+    session_id = models.CharField(max_length=100,null=True, blank=True) 
     products = models.ManyToManyField(Product, through='CartItem')
 
     def __str__(self):
-        return str(self.user.username)  # Updated for string conversion of user object
+        return self.user.username if self.user else self.session_id
 
     def get_total_quantity(self):
         return sum(item.quantity for item in self.cartitem_set.all())
 
     def get_total_price(self):
-        return float(sum(item.get_total_price() for item in self.cartitem_set.all()))
+        return sum(item.get_total_price() for item in self.cartitem_set.all())
+    
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)

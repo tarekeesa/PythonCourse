@@ -6,86 +6,124 @@
 <div class="container-fluid py-5">
     <div class="container py-5">
         <h1 class="mb-4">Billing details</h1>
-        <form action="#">
+        
+        <form action="#" id="checkoutForm">
+            {% csrf_token %}
             <div class="row g-5">
                 <div class="col-md-12 col-lg-6 col-xl-7">
-                    <div id="fullForm" style="display:none;">
+                    {% if not request.user.is_authenticated %}
+
+                    <div id="fullForm">
                         <div class="row">
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-item w-100">
                                     <label class="form-label my-3" for="firstName">First Name<sup>*</sup></label>
-                                    <input type="text" id="firstName" class="form-control">
+                                    <input type="text" id="firstName" name="firstName" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-item w-100">
                                     <label class="form-label my-3" for="lastName">Last Name<sup>*</sup></label>
-                                    <input type="text" id="lastName" class="form-control">
+                                    <input type="text" id="lastName" name="lastName" class="form-control" required>
                                 </div>
                             </div>
                         </div>
                         <div class="form-item">
-                            <label class="form-label my-3" for="companyName">Company Name<sup>*</sup></label>
-                            <input type="text" id="companyName" class="form-control">
+                            <label class="form-label my-3" for="companyName">Company Name</label>
+                            <input type="text" id="companyName" name="lastName" class="form-control" required>
                         </div>
                         <div class="form-item">
                             <label class="form-label my-3" for="mobile">Mobile<sup>*</sup></label>
-                            <input type="tel" id="mobile" class="form-control">
+                            <input type="tel" id="mobile"  name="mobile" class="form-control" required>
                         </div>
                         <div class="form-item">
                             <label class="form-label my-3" for="emailAddress">Email Address<sup>*</sup></label>
-                            <input type="email" id="emailAddress" class="form-control">
+                            <input type="email" id="emailAddress"  name="emailAddress" class="form-control" required>
+                        </div>
+                        <div class="form-check my-3">
+                            <input type="checkbox" class="form-check-input" id="Account-1" name="Accounts" value="Accounts" required>
+                            <label class="form-check-label" for="Account-1">Create an account?</label>
                         </div>
                     </div>
+                    {% endif %}
 
-                    <div id="billingAddressForm" style="display:none;">
+                    <div class="form-check my-3" style="display: none;">
+                        <input class="form-check-input" type="checkbox" id="NewAddress" name="NewAddress" value="New Address">
+                        <label class="form-check-label" for="NewAddress">Choose diffrent address</label>
+                    </div>
+                    <div id="billingAddressForm">
+                        {% if not addresses.first %}
+
                         <div class="form-item">
                             <label class="form-label my-3" for="billingAddress">Address <sup>*</sup></label>
-                            <input type="text" id="billingAddress" class="form-control" placeholder="House Number Street Name">
+                            <input type="text" id="billingAddress"  name="billingAddress" class="form-control" placeholder="House Number Street Name" required>
                         </div>
                         <div class="form-item">
                             <label class="form-label my-3" for="billingCity">Town/City<sup>*</sup></label>
-                            <input type="text" id="billingCity" class="form-control">
+                            <input type="text" id="billingCity" name="billingCity" class="form-control" required>
                         </div>
+
+                        <div class="form-item">
+                            <label class="form-label my-3" for="billingState">State<sup>*</sup></label>
+                            <input type="text" id="billingState" name="billingState" class="form-control" required>
+                        </div>
+
                         <div class="form-item">
                             <label class="form-label my-3" for="billingCountry">Country<sup>*</sup></label>
-                            <input type="text" id="billingCountry" class="form-control">
+                            <input type="text" id="billingCountry" name="billingCountry" class="form-control" required>
                         </div>
                         <div class="form-item">
-                            <label class="form-label my-3" for="billingPostcode">Postcode/Zip<sup>*</sup></label>
-                            <input type="text" id="billingPostcode" class="form-control">
+                            <label class="form-label my-3" for="billingPostcode">Postcode/Zip</label>
+                            <input type="text" id="billingPostcode" name="billingPostcode" class="form-control" required>
                         </div>
+                        {% endif %}
+
                     </div>
                    
-                    <div class="form-check my-3">
-                        <input type="checkbox" class="form-check-input" id="Account-1" name="Accounts" value="Accounts">
-                        <label class="form-check-label" for="Account-1">Create an account?</label>
-                    </div>
+                    
                     <hr>
                     <div class="form-check my-3">
-                        <input class="form-check-input" type="checkbox" id="Address-1" name="Address" value="Address">
+                        <input class="form-check-input" type="checkbox" id="Address-1" name="Address-1" >
                         <label class="form-check-label" for="Address-1">Ship to a different address?</label>
                     </div>
                         <div id="shippingAddressForm" style="display:none;">
                             <div class="form-item">
                                 <label class="form-label my-3" for="shippingAddress">Address <sup>*</sup></label>
-                                <input type="text" id="shippingAddress" class="form-control" placeholder="House Number Street Name">
+                                <input type="text" id="shippingAddress" name="shippingAddress" class="form-control" placeholder="House Number Street Name">
                             </div>
                             <div class="form-item">
                                 <label class="form-label my-3" for="shippingCity">Town/City<sup>*</sup></label>
-                                <input type="text" id="shippingCity" class="form-control">
+                                <input type="text" id="shippingCity" name="shippingCity" class="form-control">
                             </div>
                             <div class="form-item">
+                                <label class="form-label my-3" for="shippingState">State<sup>*</sup></label>
+                                <input type="text" id="shippingState" name="shippingState" class="form-control">
+                            </div>
+
+                            <div class="form-item">
                                 <label class="form-label my-3" for="shippingCountry">Country<sup>*</sup></label>
-                                <input type="text" id="shippingCountry" class="form-control">
+                                <input type="text" id="shippingCountry" name="shippingCountry" class="form-control">
                             </div>
                             <div class="form-item">
                                 <label the="form-label my-3" for="shippingPostcode">Postcode/Zip<sup>*</sup></label>
-                                <input type="text" id="shippingPostcode" class="form-control">
+                                <input type="text" id="shippingPostcode" name="shippingPostcode" class="form-control">
                             </div>
                         </div>
                         <div class="form-item">
                             <textarea name="orderNotes" id="orderNotes" class="form-control" spellcheck="false" cols="30" rows="11" placeholder="Order Notes (Optional)"></textarea>
+                        </div>
+                        <div class="row m-3 p-3">
+                            {% for address in addresses %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card address-card" data-address-id="{{ address.id }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ address.get_address }}</h5>
+                                        <p class="card-text">{{ address.name }}<br>{{ address.address_line }}, {{ address.city }}<br>{{ address.state }}, {{ address.postal_code }}<br>{{ address.country }}</p>
+                                        <button type="button" class="btn btn-primary select-address" data-address-id="{{ address.id }}">Select This Address</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                 </div>
                 <div class="col-md-12 col-lg-6 col-xl-5">
@@ -101,39 +139,20 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for item in cart_items %}
                                 <tr>
                                     <th scope="row">
                                         <div class="d-flex align-items-center mt-2">
-                                            <img src="img/vegetable-item-2.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                                            <img src="{{ item.product.image.url }}" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="{{ item.product.title }}">
                                         </div>
                                     </th>
-                                    <td class="py-5">Awesome Brocoli</td>
-                                    <td class="py-5">$69.00</td>
-                                    <td class="py-5">2</td>
-                                    <td class="py-5">$138.00</td>
+                                    <td class="py-5">{{ item.product.title }}</td>
+                                    <td class="py-5">${{ item.price_after_discount }}</td>
+                                    <td class="py-5">{{ item.quantity }}</td>
+                                    <td class="py-5">${{ item.get_total_price }}</td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">
-                                        <div class="d-flex align-items-center mt-2">
-                                            <img src="img/vegetable-item-5.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                                        </div>
-                                    </th>
-                                    <td class="py-5">Potatoes</td>
-                                    <td class="py-5">$69.00</td>
-                                    <td class="py-5">2</td>
-                                    <td class="py-5">$138.00</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">
-                                        <div class="d-flex align-items-center mt-2">
-                                            <img src="img/vegetable-item-3.png" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                                        </div>
-                                    </th>
-                                    <td class="py-5">Big Banana</td>
-                                    <td class="py-5">$69.00</td>
-                                    <td class="py-5">2</td>
-                                    <td class="py-5">$138.00</td>
-                                </tr>
+                                {% endfor %}
+
                                 <tr>
                                     <th scope="row">
                                     </th>
@@ -144,7 +163,7 @@
                                     </td>
                                     <td class="py-5">
                                         <div class="py-3 border-bottom border-top">
-                                            <p class="mb-0 text-dark">$414.00</p>
+                                            <p class="mb-0 text-dark">${{ total_price }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -156,16 +175,10 @@
                                     </td>
                                     <td colspan="3" class="py-5">
                                         <div class="form-check text-start">
-                                            <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-1" name="Shipping-1" value="Shipping">
                                             <label class="form-check-label" for="Shipping-1">Free Shipping</label>
                                         </div>
                                         <div class="form-check text-start">
-                                            <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-2" name="Shipping-1" value="Shipping">
-                                            <label class="form-check-label" for="Shipping-2">Flat rate: $15.00</label>
-                                        </div>
-                                        <div class="form-check text-start">
-                                            <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-3" name="Shipping-1" value="Shipping">
-                                            <label class="form-check-label" for="Shipping-3">Local Pickup: $8.00</label>
+                                            <label class="form-check-label" for="Shipping-2">Flat rate: $15.00 (Added)</label>
                                         </div>
                                     </td>
                                 </tr>
@@ -179,48 +192,30 @@
                                     <td class="py-5"></td>
                                     <td class="py-5">
                                         <div class="py-3 border-bottom border-top">
-                                            <p class="mb-0 text-dark">$135.00</p>
+                                            <p class="mb-0 text-dark">${{ total_price }}</p>
                                         </div>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                    <!-- Payment Method Selection -->
                     <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                         <div class="col-12">
                             <div class="form-check text-start my-3">
-                                <input type="checkbox" class="form-check-input bg-primary border-0" id="Transfer-1" name="Transfer" value="Transfer">
-                                <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
-                            </div>
-                            <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
-                        </div>
-                    </div>
-                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                        <div class="col-12">
-                            <div class="form-check text-start my-3">
-                                <input type="checkbox" class="form-check-input bg-primary border-0" id="Payments-1" name="Payments" value="Payments">
-                                <label class="form-check-label" for="Payments-1">Check Payments</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                        <div class="col-12">
-                            <div class="form-check text-start my-3">
-                                <input type="checkbox" class="form-check-input bg-primary border-0" id="Delivery-1" name="Delivery" value="Delivery">
+                                <input type="radio" class="form-check-input bg-primary border-0" id="Delivery-1" name="paymentMethod" value="cash_on_delivery" required>
                                 <label class="form-check-label" for="Delivery-1">Cash On Delivery</label>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                        <div class="col-12">
                             <div class="form-check text-start my-3">
-                                <input type="checkbox" class="form-check-input bg-primary border-0" id="Paypal-1" name="Paypal" value="Paypal">
-                                <label class="form-check-label" for="Paypal-1">Paypal</label>
+                                <input type="radio" class="form-check-input bg-primary border-0" id="Paypal-1" name="paymentMethod" value="card">
+                                <label class="form-check-label" for="Paypal-1">Paypal/Credit Card</label>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Place Order Button -->
                     <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-                        <button type="button" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
+                        <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary form_submit">Place Order</button>
                     </div>
                 </div>
             </div>
@@ -228,47 +223,83 @@
     </div>
 </div>
 <!-- Checkout Page End -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+
+</script>
 <script>
+
+has_pre_address = '{{ has_pre_address }}'
 $(document).ready(function() {
-    // Existing AJAX setup for user authentication and form handling
-    $.ajax({
-        url: '/checkout/checkout_forms/',
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            switch(data.action) {
-                case 'show_full_form':
-                    $("#fullForm").show();
-                    $("#billingAddressForm").show();
-                    $("#shippingAddressForm").hide();
-                    break;
-                case 'show_billing_address_form':
-                    $("#fullForm").hide();
-                    $("#billingAddressForm").show();
-                    $("#shippingAddressForm").hide();
-                    break;
-                case 'show_shipping_address_form':
-                    $("#fullForm").hide();
-                    $("#billingAddressForm").hide();
-                    $("#shippingAddressForm").show();
-                    break;
-                case 'review_order':
-                    // Optional: Redirect or show a review page
-                    break;
-            }
-        }
+    let selectedAddressId = null;
+
+    $('.select-address').on('click', function(e) {
+        e.preventDefault();
+        $('.address-card').removeClass('bg-success').find('.btn').removeClass('btn-success').removeClass('btn-outline-success').addClass('btn-primary');
+        $(this).closest('.card').addClass('bg-outline-success').find('.btn').removeClass('btn-outline-primary').addClass('btn-outline-success');
+
+        selectedAddressId = $(this).data('address-id');
     });
 
-    // Toggle shipping address form based on checkbox
+    
+    if (localStorage.getItem('diffAddress') === 'true') {
+        $('#Address-1').prop('checked', true);
+        $('#shippingAddressForm').show();
+    }
+
+
     $('#Address-1').change(function() {
         if ($(this).is(':checked')) {
-            $('#shippingAddressForm').slideDown(); // Animate down
+            $('#shippingAddressForm').slideDown();
+            console.log("$(this).is(':checked')",$(this).is(':checked'))
+            localStorage.setItem('diffAddress', 'true');
         } else {
-            $('#shippingAddressForm').slideUp(); // Animate up
+            $('#shippingAddressForm').slideUp();
+
+            localStorage.setItem('diffAddress', 'false');
         }
+        console.log("$(this).is(':checked')",$(this).is(':checked'))
+
+    });
+
+
+    $('#checkoutForm').on('submit', function(event) {
+        event.preventDefault();  // Prevent the default form submission
+        var formData = $(this).serialize();  // Serialize the form data
+
+        // Debugging output to ensure formData collects properly
+        console.log('Form Data:', formData);
+        if (!selectedAddressId && has_pre_address == 'True') {
+            alert('Please select an address.');
+            return;
+        }
+
+        let paymentMethod = $('input[name="paymentMethod"]:checked').val();
+        if (!paymentMethod) {
+            alert('Please select a payment method.');
+            return;
+        }
+
+        var formData = $(this).serialize() + '&addressId=' + selectedAddressId;
+        console.log('formData',formData);
+
+        $.ajax({
+            url: '/checkout/submit_order/',  // Adjust to your Django view URL
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                alert('Order has been placed successfully!');
+                console.log(response);
+                // Optionally redirect or update UI here
+            },
+            error: function(xhr, status, error) {
+                alert('Error: ' + error);
+                console.log(xhr.responseText);
+            }
+        });
     });
 });
+
 </script>
 
 

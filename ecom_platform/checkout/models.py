@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from cart.models import Cart
 
 User = get_user_model()
 
@@ -18,7 +19,7 @@ class Address(models.Model):
     address_line    = models.CharField(max_length=120)
     city            = models.CharField(max_length=120)
     country         = models.CharField(max_length=120, default='United Arab Emarite')
-    state           = models.CharField(max_length=120)
+    state           = models.CharField(max_length=120,null=True, blank=True)
     postal_code     = models.CharField(max_length=120)
     active      = models.BooleanField(default=True)
 
@@ -30,7 +31,7 @@ class Address(models.Model):
     def __str__(self):
         if self.nickname:
             return str(self.nickname)
-        return str(self.address_line_1)
+        return str(self.address_line)
 
     # def get_absolute_url(self):
     #     return reverse("address-update", kwargs={"pk": self.pk})
@@ -46,7 +47,7 @@ class Address(models.Model):
             ) 
 
     def get_address(self):
-        return "{for_name}\n{line1}\n{line2}\n{city}\n{state}, {postal}\n{country}".format(
+        return "{for_name}\n{line1}\n{city}\n{state}, {postal}\n{country}".format(
                 for_name = self.name or "",
                 line1 = self.address_line,
                 city = self.city,
@@ -61,16 +62,18 @@ class Order(models.Model):
     ('card', 'card'),
     ('cash_on_delivery', 'cash_on_delivery'),
     )
-    user        = models.ForeignKey(User, null=True, blank=True ,on_delete=models.CASCADE)
-    email       = models.EmailField()
-    active      = models.BooleanField(default=True)
-    update      = models.DateTimeField(auto_now=True)
-    timestamp   = models.DateTimeField(auto_now_add=True)
-    billing_type = models.CharField(max_length=120, choices=BILLING_TYPES ,default='cash_on_delivery' ,null=True,blank=True)
+    user                    = models.ForeignKey(User, null=True, blank=True ,on_delete=models.CASCADE)
+    shipping_address        = models.ForeignKey(Address, null=True, blank=True ,on_delete=models.CASCADE)
+    email                   = models.EmailField()
+    active                  = models.BooleanField(default=True)
+    update                  = models.DateTimeField(auto_now=True)
+    timestamp               = models.DateTimeField(auto_now_add=True)
+    billing_type            = models.CharField(max_length=120, choices=BILLING_TYPES ,default='cash_on_delivery' ,null=True,blank=True)
+    cart                    = models.OneToOneField(Cart, null=True, blank=True ,on_delete=models.CASCADE)
 
     class Meta:
         indexes = [
-            models.Index(fields=['user','billing_type','email','active',]),
+            models.Index(fields=['user','cart','shipping_address','billing_type','email','active',]),
         ]
         
 
