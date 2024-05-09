@@ -59,26 +59,28 @@ def submit_order(request):
     # Extract the data from the request
     data = request.POST
     user = request.user
-    create_account = data.get('createAccount') == 'True'
+    create_account = request.POST.get('createAccount') == 'yes'
+
     payment_method = data.get('paymentMethod')
     different_address = 'Address-1' in request.POST
     print('Different Address:', different_address)
     address_Id = data.get('addressId')
 
-    print('user',user,'create_account',create_account,'different_address',different_address,'payment_method',payment_method,'data',data)
+    print('user',user,'create_account',data.get('createNewAccount'),'different_address',different_address,'payment_method',payment_method,'data',data)
     # Handle user creation or identification
     if create_account and not user.is_authenticated:
         # Create a new user if "Create an account" is checked and user is not authenticated
         username = data.get('emailAddress')  # Consider more robust username generation and validation
         password = User.objects.make_random_password()
         user = User.objects.create_user(username=username, email=data.get('emailAddress'), password=password)
-        # Populate other fields as needed and send user their credentials or trigger verification flow
+        print('create_account',user)
+        # TODO send email verfication  
     elif not user.is_authenticated:
         # Create a guest user or handle as an anonymous order
         print('guest user')
         user = None  # Or handle it by creating a temporary guest user
     print('address_Id',address_Id)
-    if address_Id:
+    if not address_Id == 'null':
         billing_address= Address.objects.filter(id=address_Id).first()
     else:
         billing_address_data = {

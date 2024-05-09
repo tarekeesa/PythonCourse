@@ -1,24 +1,22 @@
 from django import template
-from cart.models import Cart
+from django.utils.http import url_has_allowed_host_and_scheme
+from cart.models import Cart, CartItem
+from django.db.models import Q
 
 register = template.Library()
 
 @register.filter
-def in_cart(product_id, user):
-    if user.is_authenticated:
-        cart = Cart.objects.filter(user=user).first()
-        if cart:
-            return cart.cartitem_set.filter(product_id=product_id).exists()
-    return False
-from django import template
-from cart.models import Cart
+def in_cart(product_id, request):
+    # Check if user is authenticated and get the cart accordingly
+    if request.user.is_authenticated:
+        cart = Cart.objects.filter(user=request.user).first()
+    else:
+        session_id = request.session.session_key
+        if session_id:
+            cart = Cart.objects.filter(session_id=session_id).first()
+        else:
+            return False
 
-register = template.Library()
-
-@register.filter
-def in_cart(product_id, user):
-    if user.is_authenticated:
-        cart = Cart.objects.filter(user=user).first()
-        if cart:
-            return cart.cartitem_set.filter(product_id=product_id).exists()
+    if cart:
+        return CartItem.objects.filter(cart=cart, product_id=product_id).exists()
     return False

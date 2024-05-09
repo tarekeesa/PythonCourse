@@ -41,8 +41,9 @@
                             <input type="email" id="emailAddress"  name="emailAddress" class="form-control" required>
                         </div>
                         <div class="form-check my-3">
-                            <input type="checkbox" class="form-check-input" id="Account-1" name="Accounts" value="Accounts" required>
+                            <input type="checkbox" class="form-check-input" id="Account-1" name="createAccount" value="yes">
                             <label class="form-check-label" for="Account-1">Create an account?</label>
+
                         </div>
                     </div>
                     {% endif %}
@@ -240,6 +241,18 @@ $(document).ready(function() {
         selectedAddressId = $(this).data('address-id');
     });
 
+    if (localStorage.getItem('createNewAccount') === 'true') {
+        $('#Account-1').prop('checked', true);
+    }
+    $('#Account-1').change(function() {
+        if ($(this).is(':checked')) {
+            localStorage.setItem('createNewAccount', 'true');
+        } else {
+            localStorage.setItem('createNewAccount', 'false');   
+        }
+    });
+
+
     
     if (localStorage.getItem('diffAddress') === 'true') {
         $('#Address-1').prop('checked', true);
@@ -278,8 +291,9 @@ $(document).ready(function() {
             alert('Please select a payment method.');
             return;
         }
+        var createAccount = $('#Account-1').is(':checked');
 
-        var formData = $(this).serialize() + '&addressId=' + selectedAddressId;
+        var formData = $(this).serialize() + '&addressId=' + selectedAddressId + '&createAccount=' + createAccount;
         console.log('formData',formData);
 
         $.ajax({

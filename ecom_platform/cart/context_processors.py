@@ -6,8 +6,10 @@ def cart_context(request):
         cart_items = cart.cartitem_set.all()
         cart_items_count = cart_items.count()
     else:
-        cart_items = []
-        cart_items_count = 0
+        session_id = request.session.session_key or request.session.create()
+        cart, _ = Cart.objects.get_or_create(session_id=session_id)
+        cart_items = cart.cartitem_set.all()
+        cart_items_count = cart_items.count()
 
     return {
         'cart_items': cart_items,

@@ -1,7 +1,7 @@
 {% load cart_tags %}
 
 <div class="product-actions">
-    {% with is_in_cart=product.id|in_cart:request.user %}
+    {% with is_in_cart=product.id|in_cart:request %}
     {% if is_in_cart %}
         <a href="{% url 'cart:list' %}" class="btn border border-secondary rounded-pill px-3 text-primary">
             <i class="fa fa-shopping-cart me-2 text-primary"></i> In Cart
