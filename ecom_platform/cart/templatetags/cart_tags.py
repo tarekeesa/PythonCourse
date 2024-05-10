@@ -9,11 +9,11 @@ register = template.Library()
 def in_cart(product_id, request):
     # Check if user is authenticated and get the cart accordingly
     if request.user.is_authenticated:
-        cart = Cart.objects.filter(user=request.user).first()
+        cart = Cart.objects.filter(user=request.user,active=True).first()
     else:
         session_id = request.session.session_key
         if session_id:
-            cart = Cart.objects.filter(session_id=session_id).first()
+            cart = Cart.objects.filter(session_id=session_id,active=True).first()
         else:
             return False
 

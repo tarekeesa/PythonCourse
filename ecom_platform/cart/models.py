@@ -4,20 +4,38 @@ from products.models import Product
 
 User = get_user_model()
 
-class Cart(models.Model):
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
-    session_id = models.CharField(max_length=100,null=True, blank=True) 
-    products = models.ManyToManyField(Product, through='CartItem')
+class CartManager(models.Manager):
+    def new_or_get(self, request):
+        if request.user.is_authenticated:
+            # Get or create a cart for the authenticated user
+            cart, created = self.get_or_create(user=request.user,active= True)
+        else:
+            # Ensure there is a session key
+            session_id = request.session.session_key or request.session.create()
+            # Get or create a cart using the session ID
+            cart, created = self.get_or_create(session_id=session_id,active= True)
+        return cart, created
+    
+
+class Cart(models.Model):
+    user        = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    session_id  = models.CharField(max_length=100,null=True, blank=True) 
+    products    = models.ManyToManyField(Product, through='CartItem')
+    active      = models.BooleanField(default=True)
+    updated     = models.DateTimeField(auto_now=True,null=True)
+    timestamp   = models.DateTimeField(auto_now_add=True,null=True)
+
+    objects = CartManager()
 
     def __str__(self):
-        return self.user.username if self.user else self.session_id
-
+        return f"Cart ID: {self.id}"
+    
     def get_total_quantity(self):
         return sum(item.quantity for item in self.cartitem_set.all())
 
     def get_total_price(self):
-        return sum(item.get_total_price() for item in self.cartitem_set.all())
+        return float(sum(item.get_total_price() for item in self.cartitem_set.all()))
     
 
 class CartItem(models.Model):
@@ -28,10 +46,11 @@ class CartItem(models.Model):
     variant = models.CharField(max_length=100, blank=True)  # Optional product variant
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    active   = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(f'{self.product.title} quanitity {self.quantity}')  # Updated for string conversion of user object
-
+        return f"Cart ID: {self.id}"
+    
     def get_total_price(self):
         total_price = self.quantity * self.price
         total_price -= self.discount_amount
