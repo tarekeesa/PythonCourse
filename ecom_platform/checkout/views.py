@@ -4,10 +4,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
-from django.db import transaction
 import random
-
-
 from cart.models import Cart, CartItem
 from .models import Address, Order
 
@@ -21,7 +18,7 @@ def checkout_view(request):
         addresses = user.address_set.all()
         has_pre_address = addresses.count() > 0
         print('has_pre_address',has_pre_address)
-        cart = get_object_or_404(Cart, user=user)  # Assumes user is linked directly to a cart
+        cart = get_object_or_404(Cart, user=user,active=True)  # Assumes user is linked directly to a cart
 
         # Fetch cart items
         cart_items = cart.cartitem_set.all()
@@ -148,9 +145,4 @@ def submit_order(request):
 
     else:
         return JsonResponse({'status': 'error', 'message': str(e)})
-
-    print('order',order,'user',user,"data.get('emailAddress') or user.email",data.get('emailAddress') or user.email,'payment_method',payment_method,'shipping_address',shipping_address  )
-
-
-    # Return a JSON response
     return JsonResponse({'status': 'success', 'message': 'Order processed successfully!', 'order_id': order.pk})

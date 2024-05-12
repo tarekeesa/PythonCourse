@@ -5,9 +5,9 @@
 <!-- Checkout Page Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
-        <h1 class="mb-4">Billing details</h1>
+        <h1 class="mb-4">Billing details {{user.id}}</h1>
         
-        <form action="#" id="checkoutForm">
+        <form action="{% url 'billing:create-checkout-session' user.id %}" method="POST" id="checkoutForm">
             {% csrf_token %}
             <div class="row g-5">
                 <div class="col-md-12 col-lg-6 col-xl-7">
@@ -293,21 +293,21 @@ $(document).ready(function() {
 
     });
 
-    $('#checkoutForm').on('submit', function(event) {
-        event.preventDefault(); // Prevent the form from submitting the traditional way
-        if (!selectedAddressId && has_pre_address == 'True') {
-            alert('Please select an address.');
-            return;
-        }
+    // $('#checkoutForm').on('submit', function(event) {
+    //     event.preventDefault(); // Prevent the form from submitting the traditional way
+    //     if (!selectedAddressId && has_pre_address == 'True') {
+    //         alert('Please select an address.');
+    //         return;
+    //     }
 
-        let paymentMethod = $('input[name="paymentMethod"]:checked').val();
-        if (!paymentMethod) {
-            alert('Please select a payment method.');
-            return;
-        }
-        // Show confirmation modal
-        $('#confirmationModal').modal('show');
-    });
+    //     let paymentMethod = $('input[name="paymentMethod"]:checked').val();
+    //     if (!paymentMethod) {
+    //         alert('Please select a payment method.');
+    //         return;
+    //     }
+    //     // Show confirmation modal
+    //     $('#confirmationModal').modal('show');
+    // });
 
     // Handle the confirmation button click
     $('#confirmOrderBtn').click(function() {

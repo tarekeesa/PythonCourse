@@ -29,6 +29,7 @@ urlpatterns = [
     path('products/', include("products.urls", namespace='products')),
     path('cart/', include("cart.urls", namespace='cart')),
     path('checkout/', include("checkout.urls", namespace='checkout')),
+    path('billing/', include("billing.urls", namespace='billing')),
 
     path('tinymce/', include('tinymce.urls')),
 
