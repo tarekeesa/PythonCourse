@@ -41,7 +41,7 @@ class Cart(models.Model):
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2, default=1)
+    quantity = models.PositiveSmallIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2,null=True)  # Price at time of adding to cart
     variant = models.CharField(max_length=100, blank=True)  # Optional product variant
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)

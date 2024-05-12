@@ -141,8 +141,10 @@ def submit_order(request):
             billing_type=payment_method,
             shipping_address=shipping_address,
             cart=cart,
+            status='pending',
         )
 
     else:
         return JsonResponse({'status': 'error', 'message': str(e)})
+    
     return JsonResponse({'status': 'success', 'message': 'Order processed successfully!', 'order_id': order.pk})

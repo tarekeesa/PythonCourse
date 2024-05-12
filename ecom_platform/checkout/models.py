@@ -57,11 +57,17 @@ class Address(models.Model):
                 country = self.country
             )
     
-
 class Order(models.Model):
     BILLING_TYPES = (
     ('card', 'card'),
     ('cash_on_delivery', 'cash_on_delivery'),
+    )
+    STATUS = (
+    ('paid', 'paid'),
+    ('deliveried', 'deliveried'),
+    ('pending', 'pending'),
+    ('canceled','canceled'),
+    
     )
     
     user                    = models.ForeignKey(User, null=True, blank=True ,on_delete=models.CASCADE)
@@ -72,6 +78,8 @@ class Order(models.Model):
     timestamp               = models.DateTimeField(auto_now_add=True)
     billing_type            = models.CharField(max_length=120, choices=BILLING_TYPES ,default='cash_on_delivery' ,null=True,blank=True)
     cart                    = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    status                  = models.CharField(max_length=120, choices=STATUS ,default='cash_on_delivery' ,null=True,blank=True)
+    billing_id              = models.CharField(max_length=50,null=True)
 
     class Meta:
         indexes = [
@@ -84,12 +92,12 @@ class Order(models.Model):
         email_str = str(self.email) if self.email else "No Email"
         return f"Order for {user_str} with email {email_str}"
 
-
 @receiver(post_save, sender=Order)
 def post_save_order(sender, instance, created, **kwargs):
     if created:  # Only set the cart to inactive if the order is being created (not updated)
         cart = instance.cart
-        if cart:  # Check if there is an associated cart
+        is_cash = instance.billing_type == 'cash_on_delivery'
+        if cart and is_cash:  # Check if there is an associated cart
             cart.active = False
             cart.save()
 

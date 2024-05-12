@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.views.generic import DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 User = get_user_model()
 
@@ -50,3 +51,12 @@ def user_register(request):
             return render(request, 'users/login.html', {'error': str(e)})
 
     return render(request, 'users/login.html')
+
+
+class AccountDetailView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = 'users/account_detail.html'
+    context_object_name = 'user'
+
+    def get_object(self):
+        return self.request.user

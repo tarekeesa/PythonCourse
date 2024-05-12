@@ -7,7 +7,7 @@
     <div class="container py-5">
         <h1 class="mb-4">Billing details {{user.id}}</h1>
         
-        <form action="{% url 'billing:create-checkout-session' user.id %}" method="POST" id="checkoutForm">
+        <form action="{% url 'billing:create-checkout-session' %}" method="POST" id="checkoutForm">
             {% csrf_token %}
             <div class="row g-5">
                 <div class="col-md-12 col-lg-6 col-xl-7">
@@ -271,8 +271,6 @@ $(document).ready(function() {
         }
     });
 
-
-    
     if (localStorage.getItem('diffAddress') === 'true') {
         $('#Address-1').prop('checked', true);
         $('#shippingAddressForm').show();
@@ -293,54 +291,55 @@ $(document).ready(function() {
 
     });
 
-    // $('#checkoutForm').on('submit', function(event) {
-    //     event.preventDefault(); // Prevent the form from submitting the traditional way
-    //     if (!selectedAddressId && has_pre_address == 'True') {
-    //         alert('Please select an address.');
-    //         return;
-    //     }
+    $('#checkoutForm').on('submit', function(event) {
+        event.preventDefault(); // Prevent the form from being submitted
+        let paymentMethod = $('input[name="paymentMethod"]:checked').val();
 
-    //     let paymentMethod = $('input[name="paymentMethod"]:checked').val();
-    //     if (!paymentMethod) {
-    //         alert('Please select a payment method.');
-    //         return;
-    //     }
-    //     // Show confirmation modal
-    //     $('#confirmationModal').modal('show');
-    // });
+        // Check if a payment method has been selected
+        if (!paymentMethod) {
+            alert('Please select a payment method.');
+            return false;
+        }
+        
+        if (!selectedAddressId && has_pre_address == 'True') {
+                alert('Please select an address.');
+                return false;
+            }
 
-    // Handle the confirmation button click
-    $('#confirmOrderBtn').click(function() {
         var createAccount = $('#Account-1').is(':checked');
         console.log('createAccount',createAccount)
         var formData = $('#checkoutForm').serialize()+'&addressId=' + selectedAddressId + '&createAccount=' + createAccount;; // Serialize the form data
         
+        $('#confirmationModal').modal('show');
 
-        $.ajax({
-            url: '/checkout/submit_order/',
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
-            success: function(response) {
-                $('#confirmationModal').modal('hide'); // Hide the confirmation modal
-                alert('Order has been placed successfully!'); // Show success message
+        $('#confirmOrderBtn').click(function() {
+            $.ajax({
+                url: '/checkout/submit_order/',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    $('#confirmationModal').modal('hide'); 
+                    alert('Order has been placed successfully!');
 
-                // Clear local storage or any other states if necessary
-                localStorage.clear();
+                    localStorage.clear();
 
-                // Reset cart items count if there's a specific element showing this
-                $('#cartItemCount').text('0');
+                    $('#cartItemCount').text('0');
 
-                $('#checkoutForm')[0].reset();
-                // Additional UI reset actions if needed
-                $('#shippingAddressForm').slideUp(); // Hide shipping form if it was expanded
-                // Redirect to the home page
-                window.location.href = '/';
-            },
-            error: function(xhr, status, error) {
-                alert('Error: ' + error); // Show an error message
-                console.log(xhr.responseText);
-            }
+                    $('#checkoutForm')[0].reset();
+                    $('#shippingAddressForm').slideUp(); 
+                    // Redirect to the home page
+                    if (paymentMethod == 'card'){
+                        window.location.href = '/billing/create-checkout-session';
+                    }else{
+                        window.location.href = '/';
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + error.message);
+                    console.log(xhr.responseText);
+                }
+            });
         });
     });
 });

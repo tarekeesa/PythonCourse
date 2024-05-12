@@ -55,7 +55,7 @@
                                           <i class="fa fa-minus"></i>
                                       </button>
                                   </div>
-                                  <input type="text" class="form-control form-control-sm text-center border-0" value="{{ cart_item.quantity|floatformat:'0' }}" data-item-id="{{ cart_item.id }}">
+                                  <input type="text" class="form-control form-control-sm text-center border-0" value="{{ cart_item.quantity }}" data-item-id="{{ cart_item.id }}">
                                   <div class="input-group-btn">
                                       <button class="btn btn-sm btn-plus rounded-circle bg-light border" data-item-id="{{ cart_item.id }}">
                                           <i class="fa fa-plus"></i>
@@ -64,7 +64,7 @@
                               </div>
                           </td>
                           <td>
-                              <p class="mb-0 mt-4" id="item-total-{{ cart_item.id }}">{{ cart_item.price|floatformat:"1"|multiply:cart_item.quantity|floatformat:"1" }} $</p>
+                              <p class="mb-0 mt-4" id="item-total-{{ cart_item.id }}">{{ cart_item.price|floatformat:"1"|multiply:cart_item.quantity }} $</p>
                           </td>
                           <td>
                               <button class="btn btn-md rounded-circle bg-light border mt-4 btn-times" data-item-id="{{ cart_item.id }}">
@@ -114,14 +114,17 @@
 <script>
   $(document).ready(function() {
       $('.btn-plus, .btn-minus').on('click', function(e) {
-          const isPositive = $(e.target).closest('.btn-plus').length > 0;
-          const input = $(this).closest('.quantity').find('input');
-          let quantity = parseInt(input.val());
-          quantity = isPositive ? quantity + 1 : quantity - 1;
-          quantity = quantity < 1 ? 1 : quantity;
-  
-          // Update the server and then update UI based on response
-          updateCartItem(input.data('item-id'), quantity, input);
+        e.preventDefault();  // Prevent any default button click behavior
+        e.stopPropagation(); // Stop the event from bubbling up the DOM
+        const isPositive = $(this).hasClass('btn-plus');
+        const input = $(this).closest('.quantity').find('input');
+        let quantity = parseInt(input.val()) || 0;
+        console.log('fetched quantity',quantity)
+        quantity = quantity < 1 ? 1 : quantity;
+        console.log('fetched quantity',quantity)
+
+        // Update the server and then update UI based on response
+        updateCartItem(input.data('item-id'), quantity, input);
       });
   
       $('.btn-times').on('click', function() {
@@ -144,6 +147,7 @@
                       $('#subtotal').text('$' + response.subtotal.toFixed(1));
                       $('#total').text('$' + response.total.toFixed(1));
                   }
+
                   if(response.item_total !== undefined) {
                       $('#item-total-' + itemId).text('$' + response.item_total.toFixed(1));
                   }

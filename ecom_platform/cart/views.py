@@ -61,7 +61,7 @@ def remove_cart_item(request):
     cart_item = CartItem.objects.get(id=item_id)
     cart = cart_item.cart
     cart_item.delete()
-    cart_count = Cart.objects.get(user=request.user).cartitem_set.count()  # Update count after removal
+    cart_count = Cart.objects.get(user=request.user,active=True).cartitem_set.count()  # Update count after removal
 
     return JsonResponse({
         'success': True,
